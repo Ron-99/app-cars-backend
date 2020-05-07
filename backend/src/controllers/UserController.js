@@ -81,6 +81,7 @@ module.exports = {
             }
             
             const token = await authService.generateToken({
+                id: user._id,
                 email: user.email, 
                 name: user.name
             });
@@ -107,17 +108,6 @@ module.exports = {
     },
 
     async refreshToken (req, res) {
-        const contract = new ValidationContract();
-        contract.isRequired(req.body.email, 'O e-mail do usuário deve ser informado');
-        contract.isEmail(req.body.email, 'E-mail inválido');
-        contract.isRequired(req.body.password, 'A senha do usuário deve ser informada');
-        contract.hasMinLen(req.body.password, 6, 'A senha deve ter no minimo 6 caracteres');
-
-        if(!contract.isValid()){
-            res.status(400).send(contract.errors()).end();
-            return;
-        }
-
         try {
             const token = req.body.token || req.query.token || req.headers['x-access-token'];
             const data = await authService.decodeToken(token);

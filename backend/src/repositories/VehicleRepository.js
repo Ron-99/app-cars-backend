@@ -2,18 +2,18 @@
 const Vehicle = require('../models/Vehicle');
 
 module.exports = {
-    async get () {
-        const vehicles = await Vehicle.paginate({}, {page: 1, limit: 10});
+    async get (idUser) {
+        const vehicles = await Vehicle.paginate({user: idUser}, {page: 1, limit: 10});
         return vehicles;
     },
 
-    async getByBrand (brand) {
-        const vehicles = await Vehicle.find({brand: brand });
+    async getByBrand (brand, idUser) {
+        const vehicles = await Vehicle.find({brand: brand, user: idUser });
         return vehicles;
     },
 
-    async getById (id){
-        const vehicle = await Vehicle.findOne({id: id});
+    async getById (id, idUser){
+        const vehicle = await Vehicle.findOne({id: id, user: idUser});
         return vehicle;
     },
 

@@ -5,9 +5,12 @@ const repository = require('../repositories/VehicleRepository');
 const authService = require('../services/auth-service');
 
 module.exports = {
-    async get (_, res) {
+    async get (req, res) {
         try{
-            const vehicle = await repository.get()
+            const token = req.body.token || req.query.token || req.headers['x-access-token'];
+            const data = await authService.decodeToken(token);
+            
+            const vehicle = await repository.get(data.id)
             res.status(200).send(vehicle);
         }catch(e){
             res.status(400).send({
@@ -18,7 +21,9 @@ module.exports = {
 
     async getByBrand (req, res) {
         try{
-            const vehicles = await repository.getByBrand(req.query.q);
+            const token = req.body.token || req.query.token || req.headers['x-access-token'];
+            const data = await authService.decodeToken(token);
+            const vehicles = await repository.getByBrand(req.query.q, data.id);
             res.status(200).send(vehicles);
         }catch(e){
             res.status(400).send({
@@ -29,7 +34,9 @@ module.exports = {
 
     async getById (req, res){
         try{
-            const vehicle = await repository.getById(req.params.id);
+            const token = req.body.token || req.query.token || req.headers['x-access-token'];
+            const data = await authService.decodeToken(token);
+            const vehicle = await repository.getById(req.params.id, data.id);
             return res.status(200).send(vehicle);
         }catch(e){
             res.status(400).send({
@@ -55,7 +62,14 @@ module.exports = {
             const token = req.body.token || req.query.token || req.headers['x-access-token'];
             const data = await authService.decodeToken(token);
             
-            await repository.create(req.body);
+            await repository.create({
+                id: req.body.id,
+                vehicle: req.body.vehicle,
+                brand: req.body.brand,
+                year: req.body.year,
+                description: req.body.description,
+                user: data.id
+            });
             res.status(201).send({
                 message: 'Veículo criado com sucesso!'
             });

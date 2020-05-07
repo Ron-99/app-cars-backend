@@ -26,6 +26,14 @@ mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@${proc
 // Carrega os Models 
 requireDir('./models');
 
+// Habilita o CORS
+app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, x-access-token');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
+    next();
+});
+
 app.use('/vehicles', vehicleRoute);
 app.use('/users', userRoute);
 
