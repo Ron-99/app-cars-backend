@@ -2,6 +2,7 @@
 
 const ValidationContract = require('../validators/FluentValidator');
 const repository = require('../repositories/UserRepository');
+const md5 = require('md5');
 
 module.exports = {
     async get (_, res){
@@ -41,7 +42,12 @@ module.exports = {
         }
 
         try{
-            await repository.create(req.body);
+            await repository.create({
+                id: req.body.id,
+                name: req.body.name,
+                email: req.body.email,
+                password: md5(req.body.password)
+            });
             res.status(201).send({
                 message: 'Usuário criado com sucesso!'
             });
