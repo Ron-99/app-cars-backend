@@ -22,14 +22,14 @@ module.exports = {
     },
 
     async update (id, data) {
-        await Vehicle.findOneAndUpdate(id, data);
+        await Vehicle.findOneAndUpdate({id: id}, data);
     },
 
     async updateBySomeFields (id, data){
-        await Vehicle.findOneAndUpdate(id, data);
+        await Vehicle.findOneAndUpdate({id: id}, data);
     },
 
     async delete (id) {
-        await Vehicle.findOneAndRemove(id);
+        await Vehicle.findOneAndRemove({id: id});
     }
 }
