@@ -58,7 +58,7 @@ module.exports = {
         }catch(e){
             if(e.code === 11000){
                 res.status(400).send({
-                    message: 'Já existe um veículo com esse id'
+                    message: 'Esse veículo já existe'
                 });
             }else{
                 res.status(400).send({

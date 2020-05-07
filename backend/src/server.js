@@ -7,6 +7,7 @@ require('dotenv/config');
 
 // Carrega as Rotas
 const vehicleRoute = require('./routes/VehicleRoute');
+const userRoute = require('./routes/UserRoute');
 
 // Porta
 const PORT = process.env.PORT || 3000;
@@ -26,5 +27,6 @@ mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@${proc
 requireDir('./models');
 
 app.use('/vehicles', vehicleRoute);
+app.use('/users', userRoute);
 
 app.listen(PORT, console.log(`listening on port ${PORT}`));
