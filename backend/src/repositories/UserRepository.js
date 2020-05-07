@@ -15,5 +15,13 @@ module.exports = {
 
     async create (data){
         await User.create(data);
+    },
+
+    async authenticate (data) {
+        const user = await User.findOne({
+            email: data.email,
+            password: data.password
+        });
+        return user;
     }
 }
