@@ -9,7 +9,7 @@ module.exports = {
     },
 
     async getById (id){
-        const user = await User.findOne({id: id}, 'name email');
+        const user = await User.findById(id);
         return user;
     },
 

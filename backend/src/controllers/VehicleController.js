@@ -1,7 +1,8 @@
 'use strict';
 
 const ValidationContract = require('../validators/FluentValidator');
-const repository = require('../repositories/VehicleRepository')
+const repository = require('../repositories/VehicleRepository');
+const authService = require('../services/auth-service');
 
 module.exports = {
     async get (_, res) {
@@ -51,6 +52,9 @@ module.exports = {
         }
 
         try{
+            const token = req.body.token || req.query.token || req.headers['x-access-token'];
+            const data = await authService.decodeToken(token);
+            
             await repository.create(req.body);
             res.status(201).send({
                 message: 'Veículo criado com sucesso!'
