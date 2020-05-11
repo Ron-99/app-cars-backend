@@ -1,19 +1,18 @@
 'use strict';
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 
 const UserSchema = new mongoose.Schema({
-    id: {
-        type: Number,
-        required: true,
-        unique: true
-    },
     name: {
         type: String,
         required: true
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true,
+        index: true,
+        uniqueCaseInsensitive: true
     },
     password: {
         type: String,
@@ -28,5 +27,7 @@ const UserSchema = new mongoose.Schema({
         default: Date.now()
     }
 });
+
+UserSchema.plugin(uniqueValidator);
 
 module.exports = mongoose.model('User', UserSchema);

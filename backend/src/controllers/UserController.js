@@ -19,7 +19,6 @@ module.exports = {
     
     async create (req, res) {
         const contract = new ValidationContract();
-        contract.isRequired(req.body.id, 'O id do usuário deve ser informado');
         contract.isRequired(req.body.name, 'O nome do usuário deve ser informado');
         contract.isRequired(req.body.email, 'O e-mail do usuário deve ser informado');
         contract.isEmail(req.body.email, 'E-mail inválido');
@@ -33,7 +32,6 @@ module.exports = {
 
         try{
             await repository.create({
-                id: req.body.id,
                 name: req.body.name,
                 email: req.body.email,
                 password: md5(req.body.password)
@@ -42,9 +40,9 @@ module.exports = {
                 message: 'Usuário criado com sucesso!'
             });
         }catch(e){
-            if(e.code === 11000){
+            if(e.errors.email){
                 res.status(400).send({
-                    message: 'Esse usuário já existe'
+                    message: 'Já existe um usuário com esse e-mail cadastrado'
                 });
             }else{
                 res.status(400).send({
@@ -74,7 +72,7 @@ module.exports = {
 
             if(!user){
                 res.status(404).send({
-                    message: 'Usuário ou senha inválidos'
+                    message: 'E-mail ou senha inválido'
                     
                 });
                 return;

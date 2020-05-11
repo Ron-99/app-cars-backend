@@ -10,7 +10,7 @@ module.exports = {
             const token = req.body.token || req.query.token || req.headers['x-access-token'];
             const data = await authService.decodeToken(token);
             
-            const vehicle = await repository.get(data.id)
+            const vehicle = await repository.get(data.id, Number(req.query.page) || 1)
             res.status(200).send(vehicle);
         }catch(e){
             res.status(400).send({
@@ -23,7 +23,7 @@ module.exports = {
         try{
             const token = req.body.token || req.query.token || req.headers['x-access-token'];
             const data = await authService.decodeToken(token);
-            const vehicles = await repository.getByBrand(req.query.q, data.id);
+            const vehicles = await repository.getByBrand(req.query.q, data.id, Number(req.query.page) || 1);
             res.status(200).send(vehicles);
         }catch(e){
             res.status(400).send({
@@ -92,17 +92,17 @@ module.exports = {
         contract.isRequired(req.body.vehicle, 'O Veículo deve ser informado');
         contract.isRequired(req.body.brand, 'A marca do veículo deve ser informada');
         contract.isRequired(req.body.year, 'O ano do veículo deve ser informado');
-        contract.hasLen(req.body.year, 4 ,'O ano deve conter 4 digitos');
+        contract.hasLen(req.body.year, 4,'O ano deve conter 4 digitos');
         contract.isInteger(req.body.year, 'O ano deve ser um valor inteiro');
 
         if(!contract.isValid()){
+            console.log(contract.errors());
             res.status(400).send(contract.errors()).end();
             return;
         }
 
         try{
-            await repository.update(req.query.id, {
-                id: req.body.id,
+            const vehicle = await repository.update(req.params.id, {
                 vehicle: req.body.vehicle,
                 brand: req.body.brand,
                 year: req.body.year,
@@ -110,12 +110,19 @@ module.exports = {
                 updated: Date.now()
             });
             res.status(200).send({
-                message: 'Veículo atualizado com sucesso!'
+                message: 'Veículo atualizado com sucesso!',
+                data: {
+                    vehicle: vehicle.vehicle,
+                    brand: vehicle.brand,
+                    year: vehicle.year,
+                    description: vehicle.description
+                }
             });
         }catch(e){
             res.status(400).send({
                 message: 'Falha ao processar sua requisição'
             });
+            console.log(e);
         }
     },
 

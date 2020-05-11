@@ -5,9 +5,7 @@ const mongoosePaginate = require('mongoose-paginate');
 const VehicleSchema = new mongoose.Schema({
     id: {
         type: String,
-        required: true,
-        index: true,
-        unique: true
+        required: true
     },
     vehicle: {
         type: String,
